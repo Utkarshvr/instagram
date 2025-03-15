@@ -79,7 +79,7 @@ export default function login() {
         >
           <View
             className={`${
-              isFormValid && !isLogging ? "bg-sky-400" : "bg-sky-300"
+              isFormValid && !isLogging ? "bg-sky-500" : "bg-sky-300"
             } p-2 rounded-md w-full items-center`}
           >
             {isLogging ? (

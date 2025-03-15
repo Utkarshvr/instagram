@@ -13,7 +13,8 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FirebaseError } from "firebase/app";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../_layout";
+import { auth, db } from "../_layout";
+import { doc, setDoc } from "firebase/firestore";
 
 export default function register() {
   const [form_value, setform_value] = useState({ email: "", password: "" });
@@ -24,11 +25,18 @@ export default function register() {
   async function registerAccount() {
     setIsRegistering(true);
     try {
-      await createUserWithEmailAndPassword(
+      const userCredential = await createUserWithEmailAndPassword(
         auth,
         form_value.email,
         form_value.password
       );
+
+      // Add user data to Firestore
+      await setDoc(doc(db, "users", userCredential.user.uid), {
+        email: userCredential.user.email,
+        createdAt: new Date(),
+      });
+
       alert("User account created & signed in!");
     } catch (e: any) {
       const error = e as FirebaseError;
@@ -85,7 +93,7 @@ export default function register() {
         >
           <View
             className={`${
-              isFormValid && !isRegistering ? "bg-sky-400" : "bg-sky-300"
+              isFormValid && !isRegistering ? "bg-sky-500" : "bg-sky-300"
             } p-2 rounded-md w-full items-center`}
           >
             {isRegistering ? (

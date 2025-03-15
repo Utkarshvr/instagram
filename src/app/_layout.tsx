@@ -1,8 +1,9 @@
 import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
-import { router, Stack, useNavigation, useSegments } from "expo-router";
+import { router, Stack, useSegments } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
+import { ActivityIndicator, View } from "react-native";
 import "react-native-reanimated";
 import "../../global.css";
 
@@ -16,16 +17,24 @@ import {
 SplashScreen.preventAutoHideAsync();
 
 import { initializeApp } from "firebase/app";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
+
 import firebaseConfig from "@/constants/firebaseConfig";
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
+
 import { initializeAuth, getReactNativePersistence } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
-import { ActivityIndicator, View } from "react-native";
+import LoadingScreen from "../components/LoadingScreen";
+
+// Initialize Auth
 export const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(ReactNativeAsyncStorage),
 });
+// Initialize Cloud Firestore and get a reference to the service
+export const db = getFirestore(app);
 
 export default function RootLayout() {
   const [loaded] = useFonts({
@@ -68,12 +77,7 @@ export default function RootLayout() {
 
   console.log({ user });
 
-  if (initializing)
-    return (
-      <View className="bg-neutral-950 flex-1 items-center justify-center">
-        <ActivityIndicator size={"large"} />
-      </View>
-    );
+  if (initializing) return <LoadingScreen />;
 
   return (
     <>

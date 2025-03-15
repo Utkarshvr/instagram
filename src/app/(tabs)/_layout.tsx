@@ -1,9 +1,40 @@
-import { Tabs } from "expo-router";
+import { router, Tabs } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import InstaDarkSvg from "@/src/assets/insta-dark-svg.svg";
-import { SvgUri } from "react-native-svg";
+import { auth, db } from "../_layout";
+import { useEffect, useState } from "react";
+import { doc, getDoc } from "firebase/firestore";
+import LoadingScreen from "@/src/components/LoadingScreen";
 
 export default function TabLayout() {
+  const [isVerifyingUsername, setIsVerifyingUsername] = useState(true);
+  const user = auth.currentUser;
+
+  useEffect(() => {
+    if (user) {
+      (async () => {
+        // Reference to the document
+        const docRef = doc(db, "users", user.uid);
+
+        // Fetch the document
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const user = docSnap.data();
+
+          console.log("User: ", user);
+
+          if (user.username) setIsVerifyingUsername(false);
+          else router.replace("/(auth)/(onboarding)/username");
+        } else {
+          console.log("No such document!");
+        }
+      })();
+    }
+  }, [user]);
+
+  if (isVerifyingUsername) return <LoadingScreen />;
+
   return (
     <Tabs
       screenOptions={{
@@ -25,19 +56,7 @@ export default function TabLayout() {
           title: "Instagram",
           headerTitleStyle: { display: "none" },
           headerLeft: () => {
-            return (
-              <InstaDarkSvg width={160} />
-              // <SvgUri
-              //   width="100%"
-              //   height="100%"
-              //   uri="https://dev.w3.org/SVG/tools/svgweb/samples/svg-files/android.svg"
-              // />
-
-              // <Image
-              //   className="ml-4"
-              //   source={require("../../assets/insta-dark-svg.svg")}
-              // />
-            );
+            return <InstaDarkSvg width={160} />;
           },
           tabBarShowLabel: false,
           tabBarIcon: ({ color, focused, size }) => (
