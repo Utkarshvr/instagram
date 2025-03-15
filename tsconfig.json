@@ -5,7 +5,9 @@
     "paths": {
       "@/*": ["./*"],
       "@firebase/auth": ["./node_modules/@firebase/auth/dist/index.rn.d.ts"]
-    }
+    },
+    "skipLibCheck": true,
+    "types": ["nativewind/types"]
   },
   "include": [
     "**/*.ts",
