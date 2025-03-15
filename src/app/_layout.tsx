@@ -70,7 +70,7 @@ export default function RootLayout() {
 
   if (initializing)
     return (
-      <View className="flex-1 items-center justify-center">
+      <View className="bg-neutral-950 flex-1 items-center justify-center">
         <ActivityIndicator size={"large"} />
       </View>
     );

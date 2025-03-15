@@ -1,20 +1,40 @@
 {
   "expo": {
-    "name": "instagram",
+    "name": "Instagram",
     "slug": "instagram",
+    "scheme": "instagram",
+    "icon": "./src/assets/icons/insta-logo-rounded.png",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./src/assets/images/icon.png",
-    "scheme": "myapp",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "dark",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "splash": {
+        "image": "./src/assets/icons/insta-logo-rounded.png",
+        "resizeMode": "cover",
+        "backgroundColor": "#000",
+        "dark": {
+          "image": "./src/assets/icons/insta-logo-rounded.png",
+          "resizeMode": "cover",
+          "backgroundColor": "#000000"
+        }
+      }
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./src/assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./src/assets/icons/insta-logo-rounded.png",
+        "backgroundColor": "#000"
+      },
+      "splash": {
+        "image": "./src/assets/icons/insta-logo-rounded.png",
+        "resizeMode": "cover",
+        "backgroundColor": "#000",
+        "dark": {
+          "image": "./src/assets/icons/insta-logo-rounded.png",
+          "resizeMode": "cover",
+          "backgroundColor": "#000000"
+        }
       }
     },
     "web": {
@@ -27,10 +47,10 @@
       [
         "expo-splash-screen",
         {
-          "image": "./src/assets/images/splash-icon.png",
+          "image": "./src/assets/icons/insta-logo-rounded.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#000"
         }
       ],
       "expo-asset"
