@@ -20,11 +20,11 @@ export default function TabLayout() {
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
-          const user = docSnap.data();
+          const userDoc = docSnap.data();
 
-          console.log("User: ", user);
+          console.log("User: ", userDoc);
 
-          if (user.username) setIsVerifyingUsername(false);
+          if (userDoc.username) setIsVerifyingUsername(false);
           else router.replace("/(auth)/(onboarding)/username");
         } else {
           console.log("No such document!");

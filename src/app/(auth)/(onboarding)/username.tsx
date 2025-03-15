@@ -3,6 +3,7 @@ import {
   ActivityIndicator,
   Text,
   TextInput,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -40,9 +41,14 @@ export default function register() {
       console.log("Passed getDocs");
 
       if (!querySnapshot.empty) {
-        alert("Username already taken! Choose a different one.");
+        ToastAndroid.showWithGravityAndOffset(
+          "Username already taken! Choose a different one.",
+          ToastAndroid.LONG,
+          ToastAndroid.BOTTOM,
+          25,
+          50
+        );
         setIsCreating(false);
-        alert("Username not available!");
         return;
       }
 
@@ -54,7 +60,13 @@ export default function register() {
       console.log("Passed updateDoc");
     } catch (e: any) {
       const error = e as FirebaseError;
-      alert(error.message);
+      ToastAndroid.showWithGravityAndOffset(
+        error.message,
+        ToastAndroid.LONG,
+        ToastAndroid.BOTTOM,
+        25,
+        50
+      );
       console.error(error);
     } finally {
       setIsCreating(false);

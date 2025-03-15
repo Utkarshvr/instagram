@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -29,10 +30,23 @@ export default function login() {
         form_value.email,
         form_value.password
       );
-      alert("User signed in!");
+      ToastAndroid.showWithGravityAndOffset(
+        "Welcome back!",
+        ToastAndroid.LONG,
+        ToastAndroid.BOTTOM,
+        25,
+        50
+      );
     } catch (e: any) {
       const error = e as FirebaseError;
-      alert(error.message);
+
+      ToastAndroid.showWithGravityAndOffset(
+        error.message,
+        ToastAndroid.LONG,
+        ToastAndroid.BOTTOM,
+        25,
+        50
+      );
 
       console.error(error);
     } finally {

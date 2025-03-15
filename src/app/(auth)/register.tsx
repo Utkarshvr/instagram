@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -37,15 +38,39 @@ export default function register() {
         createdAt: new Date(),
       });
 
-      alert("User account created & signed in!");
+      ToastAndroid.showWithGravityAndOffset(
+        "User account created & signed in!",
+        ToastAndroid.LONG,
+        ToastAndroid.BOTTOM,
+        25,
+        50
+      );
     } catch (e: any) {
       const error = e as FirebaseError;
       if (error.code === "auth/email-already-in-use") {
-        alert("That email address is already in use!");
+        ToastAndroid.showWithGravityAndOffset(
+          "That email address is already in use!",
+          ToastAndroid.LONG,
+          ToastAndroid.BOTTOM,
+          25,
+          50
+        );
       } else if (error.code === "auth/invalid-email") {
-        alert("That email address is invalid!");
+        ToastAndroid.showWithGravityAndOffset(
+          "That email address is invalid!",
+          ToastAndroid.LONG,
+          ToastAndroid.BOTTOM,
+          25,
+          50
+        );
       } else {
-        alert(error.message);
+        ToastAndroid.showWithGravityAndOffset(
+          error.message,
+          ToastAndroid.LONG,
+          ToastAndroid.BOTTOM,
+          25,
+          50
+        );
       }
 
       console.error(error);
