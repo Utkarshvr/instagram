@@ -1,10 +1,10 @@
-import { Redirect, Tabs } from "expo-router";
+import { router, Tabs, useSegments } from "expo-router";
+import { onAuthStateChanged } from "firebase/auth";
+import { ActivityIndicator, View } from "react-native";
+import { auth } from "../_layout";
+import { useEffect, useState } from "react";
 
 export default function TabLayout() {
-  const isAuth = false;
-
-  if (!isAuth) return <Redirect href={"/(auth)/login"} />;
-
   return (
     <Tabs
       screenOptions={

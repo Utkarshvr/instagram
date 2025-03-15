@@ -1,15 +1,19 @@
-import { Button, StyleSheet, Text, View } from "react-native";
+import { Button, StyleSheet } from "react-native";
 import "../../../global.css";
-import { Link } from "expo-router";
+import { signOut } from "firebase/auth";
+import { auth } from "../_layout";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Home() {
   return (
-    <View>
-      <Text className="font-montserrat text-2xl">Home Page</Text>
-      <Link href={"/(auth)/login"} asChild>
-        <Button title="Login" />
-      </Link>
-    </View>
+    <SafeAreaView className="bg-neutral-950 flex-1 p-4">
+      <Button
+        onPress={() => {
+          signOut(auth);
+        }}
+        title="Log out"
+      />
+    </SafeAreaView>
   );
 }
 
