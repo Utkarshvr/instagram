@@ -1,6 +1,5 @@
 import { ToastAndroid } from "react-native";
 import * as FileSystem from "expo-file-system";
-import cloudinary from "@/constants/cloudinaryConfig";
 
 export function toastMsg(msg: string) {
   ToastAndroid.showWithGravityAndOffset(
