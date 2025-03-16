@@ -2,6 +2,7 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import useUserStore from "@/src/store/userStore";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Link } from "expo-router";
 
 export default function profile() {
   const { user } = useUserStore();
@@ -38,11 +39,15 @@ export default function profile() {
           <Text className="font-montserrat  text-neutral-100">Bio...</Text>
         </View>
 
-        <TouchableOpacity>
-          <View className={`bg-neutral-700 p-2 rounded-md w-full items-center`}>
-            <Text className="font-montserrat text-white">Edit Profile</Text>
-          </View>
-        </TouchableOpacity>
+        <Link asChild href={"/edit-profile"}>
+          <TouchableOpacity>
+            <View
+              className={`bg-neutral-700 p-2 rounded-md w-full items-center`}
+            >
+              <Text className="font-montserrat text-white">Edit Profile</Text>
+            </View>
+          </TouchableOpacity>
+        </Link>
       </View>
     </SafeAreaView>
   );

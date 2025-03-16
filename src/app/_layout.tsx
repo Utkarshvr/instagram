@@ -36,6 +36,8 @@ export const auth = initializeAuth(app, {
 // Initialize Cloud Firestore and get a reference to the service
 export const db = getFirestore(app);
 
+import { ActionSheetProvider } from "@expo/react-native-action-sheet";
+
 export default function RootLayout() {
   const [loaded] = useFonts({
     // SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
@@ -80,13 +82,16 @@ export default function RootLayout() {
   if (initializing) return <LoadingScreen />;
 
   return (
-    <>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="light" />
-    </>
+    <ActionSheetProvider>
+      <>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="(auth)" />
+          <Stack.Screen name="(others)" />
+          <Stack.Screen name="+not-found" />
+        </Stack>
+        <StatusBar style="light" />
+      </>
+    </ActionSheetProvider>
   );
 }
