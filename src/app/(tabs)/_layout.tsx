@@ -25,7 +25,7 @@ export default function TabLayout() {
 
         if (docSnap.exists()) {
           const userDoc = docSnap.data() as UserType;
-          setUser(userDoc);
+          setUser({ ...userDoc, uid: user.uid });
 
           if (userDoc.username) setHasVerifiedUsername(true);
           else router.replace("/(auth)/(onboarding)/username");

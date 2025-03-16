@@ -10,10 +10,17 @@ export default function profile() {
     <SafeAreaView className="bg-neutral-950 flex-1 px-4">
       <View className="w-full gap-4">
         <View className="w-full justify-between gap-2 flex-row">
-          <Image
-            className="border-neutral-300 border rounded-full w-[80px] h-[80px]"
-            source={require("@/src/assets/images/person.png")}
-          />
+          {user?.picture ? (
+            <Image
+              className="border-neutral-300 border rounded-full w-[80px] h-[80px]"
+              source={{ uri: user.picture }}
+            />
+          ) : (
+            <Image
+              className="border-neutral-300 border rounded-full w-[80px] h-[80px]"
+              source={require("@/src/assets/images/person.png")}
+            />
+          )}
           <View className="flex-row gap-4">
             <View className="gap-1 items-center">
               <Text className="text-neutral-200 font-montserrat">24</Text>
@@ -36,7 +43,14 @@ export default function profile() {
           </View>
         </View>
         <View>
-          <Text className="font-montserrat  text-neutral-100">Bio...</Text>
+          <View className="gap-1">
+            <Text className="font-montserratSemiBold text-neutral-100">
+              {user?.name}
+            </Text>
+            <Text className="font-montserrat text-neutral-100 max-w-[80%]">
+              {user?.bio}
+            </Text>
+          </View>
         </View>
 
         <Link asChild href={"/edit-profile"}>

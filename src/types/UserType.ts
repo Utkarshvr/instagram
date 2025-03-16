@@ -1,7 +1,8 @@
 interface UserType {
+  uid: string;
   username: string;
   email: string;
-  profile?: string;
+  picture?: string;
   name?: string;
   bio?: string;
 }

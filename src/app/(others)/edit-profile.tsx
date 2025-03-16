@@ -1,21 +1,27 @@
+import * as ImagePicker from "expo-image-picker";
 import useUserStore from "@/src/store/userStore";
 import { capitalizeFirstLetter } from "@/src/utils/utils";
 import { useActionSheet } from "@expo/react-native-action-sheet";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useNavigation } from "expo-router";
+import { router, useNavigation } from "expo-router";
+import { doc, updateDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   Image,
   SafeAreaView,
   ScrollView,
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
+import { db } from "../_layout";
+import { toastMsg, uploadToCloudinary } from "@/src/utils/helpers";
+import UserType from "@/src/types/UserType";
+
 export default function EditProfile() {
-  const { user } = useUserStore();
+  const { user, setUser } = useUserStore();
   const navigation = useNavigation();
   const { showActionSheetWithOptions } = useActionSheet();
 
@@ -23,22 +29,30 @@ export default function EditProfile() {
     name: user?.name || "",
     username: user?.username || "",
     email: user?.email || "",
-    profile: user?.profile || "",
+    picture: user?.picture || "",
     bio: user?.bio || "",
   });
 
   const forms = ["name", "username", "bio"];
 
-  useEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <Ionicons name={"checkmark"} size={24} color={"#0284c7"} />
-      ),
+  const selectPicture = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
     });
-  }, [navigation]);
+
+    if (!result.canceled) {
+      const img = result.assets[0];
+      console.log({ uri: img.uri });
+      setForm_value((prev) => ({ ...prev, picture: img.uri }));
+    }
+  };
 
   const editPicture = () => {
-    const options = ["New profile picture", "Remove current picture"];
+    const options = ["New picture picture", "Remove current picture", "Cancel"];
     const destructiveButtonIndex = 1;
     const cancelButtonIndex = 2;
 
@@ -57,11 +71,13 @@ export default function EditProfile() {
       (selectedIndex) => {
         switch (selectedIndex) {
           case 0:
-            // New Profile Picture
+            // New picture Picture
+            selectPicture();
             break;
 
           case destructiveButtonIndex:
             // Delete
+            setForm_value((prev) => ({ ...prev, picture: "" }));
             break;
 
           case cancelButtonIndex:
@@ -72,18 +88,72 @@ export default function EditProfile() {
     );
   };
 
+  const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
+
+  async function updateProfile() {
+    setIsUpdatingProfile(true);
+    try {
+      const docRef = doc(db, "users", user?.uid || "");
+
+      // Upload to cloudinary
+      const url = await uploadToCloudinary(form_value.picture);
+
+      await updateDoc(docRef, {
+        picture: url,
+        name: form_value.name,
+        username: form_value.username,
+        bio: form_value.bio,
+      });
+
+      setUser({
+        ...user,
+        picture: form_value.picture,
+        name: form_value.name,
+        username: form_value.username,
+        bio: form_value.bio,
+      } as UserType);
+
+      toastMsg("Profile updated");
+      router.back();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsUpdatingProfile(false);
+    }
+  }
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity className="p-2" onPressIn={updateProfile}>
+          {isUpdatingProfile ? (
+            <ActivityIndicator size={"large"} color={"#0284c7"} />
+          ) : (
+            <Ionicons name={"checkmark"} size={24} color={"#0284c7"} />
+          )}
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation, form_value, isUpdatingProfile, updateProfile]);
+
   return (
     <SafeAreaView className="bg-neutral-950  flex-1 py-2">
       <ScrollView>
         <View className="items-center justify-center">
-          <TouchableOpacity className="gap-2" onPress={editPicture}>
-            {form_value.profile ? (
+          <TouchableOpacity
+            className="gap-2 items-center"
+            onPress={editPicture}
+          >
+            {form_value.picture ? (
               <Image
-                source={{ uri: form_value.profile }}
-                className="w-[80] h-[80]"
+                source={{ uri: form_value.picture }}
+                className="w-[80px] h-[80px] rounded-full"
               />
             ) : (
-              <Ionicons name={"person-circle"} size={80} color={"white"} />
+              <Image
+                className="rounded-full w-[80px] h-[80px]"
+                source={require("@/src/assets/images/person.png")}
+              />
             )}
             <Text className="font-montserrat text-sm text-sky-600">
               Edit picture
@@ -113,5 +183,3 @@ export default function EditProfile() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({});
