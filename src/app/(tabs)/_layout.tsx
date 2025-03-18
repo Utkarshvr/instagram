@@ -7,7 +7,7 @@ import { doc, getDoc } from "firebase/firestore";
 import LoadingScreen from "@/src/components/LoadingScreen";
 import useUserStore from "@/src/store/userStore";
 import UserType from "@/src/types/UserType";
-import { Text } from "react-native";
+import { Image, Text } from "react-native";
 
 export default function TabLayout() {
   const [hasVerifiedUsername, setHasVerifiedUsername] = useState(false);
@@ -85,13 +85,21 @@ export default function TabLayout() {
             );
           },
           tabBarShowLabel: false,
-          tabBarIcon: ({ color, focused, size }) => (
-            <Ionicons
-              name={focused ? "person-circle" : "person-circle-outline"}
-              size={26}
-              color={color}
-            />
-          ),
+          tabBarIcon: ({ color, focused, size }) =>
+            userInfo?.picture ? (
+              <Image
+                className={`${
+                  focused ? "border-neutral-300 border-2" : null
+                } rounded-full w-[26px] h-[26px]`}
+                source={{ uri: userInfo.picture }}
+              />
+            ) : (
+              <Ionicons
+                name={focused ? "person-circle" : "person-circle-outline"}
+                size={26}
+                color={color}
+              />
+            ),
         }}
       />
     </Tabs>
