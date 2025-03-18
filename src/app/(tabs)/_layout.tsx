@@ -7,7 +7,8 @@ import { doc, getDoc } from "firebase/firestore";
 import LoadingScreen from "@/src/components/LoadingScreen";
 import useUserStore from "@/src/store/userStore";
 import UserType from "@/src/types/UserType";
-import { Image, Text } from "react-native";
+import { Image, Text, View } from "react-native";
+import * as Haptics from "expo-haptics";
 
 export default function TabLayout() {
   const [hasVerifiedUsername, setHasVerifiedUsername] = useState(false);
@@ -52,7 +53,7 @@ export default function TabLayout() {
           borderTopWidth: 0,
         },
       }}
-      initialRouteName="profile"
+      initialRouteName="explore"
     >
       <Tabs.Screen
         name="index"
@@ -67,6 +68,27 @@ export default function TabLayout() {
             <Ionicons
               name={focused ? "home" : "home-outline"}
               size={24}
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="explore"
+        options={{
+          title: "Explore",
+          headerTitleStyle: { display: "none" },
+
+          tabBarShowLabel: false,
+          headerShown: false,
+          tabBarIcon: ({ color, focused, size }) => (
+            <Ionicons
+              name={focused ? "search" : "search-outline"}
+              onLongPress={() => {
+                Haptics.selectionAsync();
+                router.push("/explore/search");
+              }}
+              size={26}
               color={color}
             />
           ),
