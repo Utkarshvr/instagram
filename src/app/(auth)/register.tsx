@@ -36,6 +36,7 @@ export default function register() {
       await setDoc(doc(db, "users", userCredential.user.uid), {
         email: userCredential.user.email,
         createdAt: new Date(),
+        isPrivate: false,
       });
 
       ToastAndroid.showWithGravityAndOffset(

@@ -7,6 +7,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { db } from "../../_layout";
 import { useDebounce } from "@/src/hooks/useDebounce";
 import { router } from "expo-router";
+import SearchBar from "@/src/components/SearchBar";
 
 export default function Search() {
   const { text } = useSearchStore();
@@ -47,6 +48,7 @@ export default function Search() {
 
   return (
     <SafeAreaView className="bg-neutral-950 flex-1">
+      <SearchBar />
       {!isSearching && users.length > 0 ? (
         <FlatList
           data={users}

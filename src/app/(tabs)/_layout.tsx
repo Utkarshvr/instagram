@@ -7,7 +7,7 @@ import { doc, getDoc } from "firebase/firestore";
 import LoadingScreen from "@/src/components/LoadingScreen";
 import useUserStore from "@/src/store/userStore";
 import UserType from "@/src/types/UserType";
-import { Image, Text, View } from "react-native";
+import { Image, Text, TouchableOpacity, View } from "react-native";
 import * as Haptics from "expo-haptics";
 
 export default function TabLayout() {
@@ -84,12 +84,12 @@ export default function TabLayout() {
           tabBarIcon: ({ color, focused, size }) => (
             <Ionicons
               name={focused ? "search" : "search-outline"}
-              onLongPress={() => {
-                Haptics.selectionAsync();
-                router.push("/explore/search");
-              }}
               size={26}
               color={color}
+              // onLongPress={() => {
+              //   Haptics.selectionAsync();
+              //   router.push("/explore/search");
+              // }}
             />
           ),
         }}
