@@ -11,6 +11,8 @@ import {
 } from "firebase/firestore";
 import { db } from "../app/_layout";
 import FlwType from "../types/FlwType";
+import FlwReqType from "../types/FlwReqType";
+import UserType from "../types/UserType";
 
 export const sendFollowRequest = async (
   currentUserId: string,
@@ -259,7 +261,7 @@ export const fetchFollowers = async (userId: string) => {
 };
 export const fetchFollowing = async (userId: string) => {
   try {
-    const followersRef = collection(db, "followers");
+    const followersRef = collection(db, "following");
     const q = query(followersRef, where("owner", "==", userId));
 
     const querySnapshot = await getDocs(q);
@@ -274,6 +276,48 @@ export const fetchFollowing = async (userId: string) => {
     return followers; // Returns an array of followers
   } catch (error) {
     console.error("Error fetching followers:", error);
+    return [];
+  }
+};
+
+export const fetchFollowRequests = async (userId: string) => {
+  try {
+    const followersRef = collection(db, "followRequests");
+    const q = query(followersRef, where("to", "==", userId));
+
+    const querySnapshot = await getDocs(q);
+    const followers = querySnapshot.docs.map(
+      (doc) =>
+        ({
+          id: doc.id,
+          ...doc.data(),
+        } as FlwReqType)
+    );
+
+    return followers; // Returns an array of followers
+  } catch (error) {
+    console.error("Error fetching followers:", error);
+    return [];
+  }
+};
+
+export const fetchUsersByIds = async (userIds: string[]) => {
+  // Ensure userIds is an array of strings
+  if (userIds.length === 0) return []; // ✅ Handle empty array case
+
+  try {
+    const userPromises = userIds.map(async (userId) => {
+      const userDocRef = doc(db, "users", userId); // userId should be a string
+      const userSnap = await getDoc(userDocRef);
+      return userSnap.exists()
+        ? ({ uid: userSnap.id, ...userSnap.data() } as UserType)
+        : null;
+    });
+
+    const users = await Promise.all(userPromises);
+    return users.filter((user) => user !== null); // ✅ Remove null values (non-existing users)
+  } catch (error) {
+    console.error("Error fetching users:", error);
     return [];
   }
 };

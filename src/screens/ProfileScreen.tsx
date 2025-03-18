@@ -22,7 +22,6 @@ import {
 } from "../utils/firebase-helpers";
 import { useEffect, useState } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import FlwType from "../types/FlwType";
 import useProfileStore from "../store/useProfileStore";
 
 export default function ProfileScreen({
@@ -122,7 +121,7 @@ export default function ProfileScreen({
   const deleteReq = async () => {
     if (!reqID) return console.log("reqID is not present");
     try {
-      setIsConfirmBtnDisabled(true);
+      setIsCancelBtnDisabled(true);
 
       const response = await removeFollowRequest(targetUserId, currentUserId);
       if (response === true) {
@@ -133,7 +132,7 @@ export default function ProfileScreen({
     } catch (error) {
       console.log(error);
     } finally {
-      setIsConfirmBtnDisabled(false);
+      setIsCancelBtnDisabled(false);
     }
   };
 

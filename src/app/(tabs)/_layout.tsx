@@ -53,7 +53,7 @@ export default function TabLayout() {
           borderTopWidth: 0,
         },
       }}
-      initialRouteName="explore"
+      initialRouteName="notifications"
     >
       <Tabs.Screen
         name="index"
@@ -90,6 +90,23 @@ export default function TabLayout() {
               //   Haptics.selectionAsync();
               //   router.push("/explore/search");
               // }}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="notifications"
+        options={{
+          title: "Notifications",
+          headerTitleStyle: { display: "none" },
+
+          tabBarShowLabel: false,
+          headerShown: false,
+          tabBarIcon: ({ color, focused, size }) => (
+            <Ionicons
+              name={focused ? "heart" : "heart-outline"}
+              size={26}
+              color={color}
             />
           ),
         }}

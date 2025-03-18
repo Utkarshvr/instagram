@@ -15,7 +15,7 @@ const useProfileStore = create<ProfileStore>((set) => ({
   userFollowing: [],
 
   setUserFollowers(array: FlwType[]) {
-    set(() => ({ userFollowing: array }));
+    set(() => ({ userFollowers: array }));
   },
   setUserFollowing(array: FlwType[]) {
     set(() => ({ userFollowing: array }));
