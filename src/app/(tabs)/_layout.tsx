@@ -1,39 +1,20 @@
-import { router, Tabs } from "expo-router";
+import { Tabs } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import InstaDarkSvg from "@/src/assets/insta-dark-svg.svg";
-import { auth, db } from "../_layout";
+import { auth } from "../_layout";
 import { useEffect, useState } from "react";
-import { doc, getDoc } from "firebase/firestore";
 import LoadingScreen from "@/src/components/LoadingScreen";
 import useUserStore from "@/src/store/userStore";
-import UserType from "@/src/types/UserType";
-import { Image, Text, TouchableOpacity, View } from "react-native";
-import * as Haptics from "expo-haptics";
-
+import { Image, Text } from "react-native";
 export default function TabLayout() {
   const [hasVerifiedUsername, setHasVerifiedUsername] = useState(false);
   const user = auth.currentUser;
-  const { user: userInfo, setUser } = useUserStore();
+  const { fetchUser, user: userInfo } = useUserStore();
 
   useEffect(() => {
     if (user && !hasVerifiedUsername) {
-      (async () => {
-        // Reference to the document
-        const docRef = doc(db, "users", user.uid);
-
-        // Fetch the document
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()) {
-          const userDoc = docSnap.data() as UserType;
-          setUser({ ...userDoc, uid: user.uid });
-
-          if (userDoc.username) setHasVerifiedUsername(true);
-          else router.replace("/(auth)/(onboarding)/username");
-        } else {
-          console.log("No such document!");
-        }
-      })();
+      user?.uid && fetchUser(user?.uid);
+      setHasVerifiedUsername(true);
     }
   }, [user, hasVerifiedUsername]);
 

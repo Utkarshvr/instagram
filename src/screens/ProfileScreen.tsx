@@ -139,6 +139,21 @@ export default function ProfileScreen({
   const { userFollowers, userFollowing, setUserFollowers, setUserFollowing } =
     useProfileStore();
 
+  async function fetchFlwrsAndFlwngs(userID: string) {
+    try {
+      console.log({ userID });
+      const flwrs = await fetchFollowers(userID);
+      const flwngs = await fetchFollowing(userID);
+
+      console.log({ flwrs, flwngs });
+
+      setUserFollowers(flwrs);
+      setUserFollowing(flwngs);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   useEffect(() => {
     if (currentUserId && targetUserId && !isMe) {
       // Check if current user follows or has requested the target user
@@ -171,19 +186,12 @@ export default function ProfileScreen({
         }
       })();
 
-      // Fetch followers & followings
-      (async () => {
-        try {
-          const flwrs = await fetchFollowers(currentUserId);
-          const flwngs = await fetchFollowing(currentUserId);
-          setUserFollowers(flwrs);
-          setUserFollowing(flwngs);
-        } catch (error) {
-          console.log(error);
-        }
-      })();
+      fetchFlwrsAndFlwngs(targetUserId);
     }
+    if (isMe) fetchFlwrsAndFlwngs(currentUserId);
   }, [currentUserId, targetUserId, isMe]);
+
+  console.log({ isMe });
 
   return (
     <ScrollView

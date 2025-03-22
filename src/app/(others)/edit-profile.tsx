@@ -94,9 +94,11 @@ export default function EditProfile() {
     setIsUpdatingProfile(true);
     try {
       const docRef = doc(db, "users", user?.uid || "");
+      let url = form_value.picture;
 
-      // Upload to cloudinary
-      const url = await uploadToCloudinary(form_value.picture);
+      if (form_value.picture !== user?.picture)
+        // Upload to cloudinary
+        url = await uploadToCloudinary(form_value.picture);
 
       await updateDoc(docRef, {
         picture: url,

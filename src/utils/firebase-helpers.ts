@@ -13,6 +13,8 @@ import { db } from "../app/_layout";
 import FlwType from "../types/FlwType";
 import FlwReqType from "../types/FlwReqType";
 import UserType from "../types/UserType";
+import COLLECTION_NAME_TYPE from "../types/COLLECTION_NAME_TYPE";
+import { FirebaseError } from "firebase/app";
 
 export const sendFollowRequest = async (
   currentUserId: string,
@@ -321,3 +323,101 @@ export const fetchUsersByIds = async (userIds: string[]) => {
     return [];
   }
 };
+
+// BETTER & FLEXIBLE FOR ALL TYPES
+
+export async function fetchDocByID<T = any>(
+  collection_name: COLLECTION_NAME_TYPE,
+  id: string
+) {
+  try {
+    const ref = doc(db, collection_name, id);
+    const snap = await getDoc(ref);
+
+    if (!snap.exists()) {
+      return {
+        isSuccess: false,
+        error: { message: "Doc not found" },
+        data: null,
+      };
+    }
+
+    return {
+      isSuccess: true,
+      error: null,
+      data: { uid: snap.id, ...snap.data() } as T,
+    };
+  } catch (error) {
+    console.error("Error fetching doc:", error);
+    return { isSuccess: false, error: error as FirebaseError, data: null };
+  }
+}
+
+export async function fetchAllDocs<T>(collection_name: COLLECTION_NAME_TYPE) {
+  try {
+    const ref = collection(db, collection_name);
+    const snapshot = await getDocs(ref);
+    // Convert Firestore data to ProjectType[]
+    const data = snapshot.docs.map(
+      (doc) =>
+        ({
+          id: doc.id,
+          ...doc.data(),
+        } as T)
+    );
+
+    return {
+      isSuccess: true,
+      error: null,
+      data,
+    };
+  } catch (error) {
+    console.log(error);
+    return { isSuccess: false, error: error as FirebaseError, data: null };
+  }
+}
+
+export async function createFB(
+  collection_name: COLLECTION_NAME_TYPE,
+  data: any
+) {
+  try {
+    const ref = doc(collection(db, collection_name));
+    await setDoc(ref, data);
+
+    return { isSuccess: true, error: null, id: ref.id };
+  } catch (error) {
+    console.log(error);
+    return { isSuccess: false, error: error as FirebaseError, id: null };
+  }
+}
+
+export async function updateFB(
+  collection_name: COLLECTION_NAME_TYPE,
+  id: string,
+  data: any
+) {
+  try {
+    const ref = doc(db, collection_name, id);
+    await updateDoc(ref, data);
+
+    return { isSuccess: true, error: null };
+  } catch (error) {
+    console.error("Error updating project:", error);
+    return { isSuccess: false, error: error as FirebaseError };
+  }
+}
+export async function deleteFB(
+  collection_name: COLLECTION_NAME_TYPE,
+  id: string
+) {
+  try {
+    const ref = doc(db, collection_name, id);
+    await deleteDoc(ref);
+
+    return { isSuccess: true, error: null };
+  } catch (error) {
+    console.error("Error deleting document:", error);
+    return { isSuccess: false, error: error as FirebaseError };
+  }
+}
