@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import LoadingScreen from "@/src/components/LoadingScreen";
 import useUserStore from "@/src/store/userStore";
 import { Image, Text } from "react-native";
+
 export default function TabLayout() {
   const [hasVerifiedUsername, setHasVerifiedUsername] = useState(false);
   const user = auth.currentUser;
@@ -71,6 +72,23 @@ export default function TabLayout() {
               //   Haptics.selectionAsync();
               //   router.push("/explore/search");
               // }}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="create"
+        options={{
+          title: "Create",
+          headerTitleStyle: { display: "none" },
+
+          tabBarShowLabel: false,
+          headerShown: false,
+          tabBarIcon: ({ color, focused, size }) => (
+            <Ionicons
+              name={focused ? "add-circle-outline" : "add-circle"}
+              size={26}
+              color={color}
             />
           ),
         }}

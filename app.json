@@ -35,7 +35,8 @@
           "resizeMode": "cover",
           "backgroundColor": "#000000"
         }
-      }
+      },
+      "package": "com.utkarshh.instagram"
     },
     "web": {
       "bundler": "metro",
