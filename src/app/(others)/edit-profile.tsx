@@ -146,17 +146,15 @@ export default function EditProfile() {
             className="gap-2 items-center"
             onPress={editPicture}
           >
-            {form_value.picture ? (
-              <Image
-                source={{ uri: form_value.picture }}
-                className="w-[80px] h-[80px] rounded-full"
-              />
-            ) : (
-              <Image
-                className="rounded-full w-[80px] h-[80px]"
-                source={require("@/src/assets/images/person.png")}
-              />
-            )}
+            <Image
+              source={
+                form_value.picture
+                  ? { uri: form_value.picture }
+                  : require("@/src/assets/images/person.png")
+              }
+              className="w-[80px] h-[80px] rounded-full"
+            />
+
             <Text className="font-montserrat text-sm text-sky-600">
               Edit picture
             </Text>
