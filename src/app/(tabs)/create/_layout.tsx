@@ -1,3 +1,4 @@
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { Stack } from "expo-router";
 import { Text } from "react-native";
 
@@ -13,12 +14,12 @@ export default function _layout() {
       }}
     >
       <Stack.Screen
-        name="index"
+        name="post"
         options={{
           headerShown: true,
           headerTitle: () => (
             <Text className="text-neutral-50 font-montserratSemiBold">
-              Create
+              New post
             </Text>
           ),
         }}

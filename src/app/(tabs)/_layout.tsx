@@ -35,7 +35,7 @@ export default function TabLayout() {
           borderTopWidth: 0,
         },
       }}
-      initialRouteName="notifications"
+      initialRouteName="create"
     >
       <Tabs.Screen
         name="index"
