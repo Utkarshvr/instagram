@@ -1,4 +1,4 @@
-import { Tabs } from "expo-router";
+import { router, Tabs } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import InstaDarkSvg from "@/src/assets/insta-dark-svg.svg";
 import { auth } from "../_layout";
@@ -35,7 +35,7 @@ export default function TabLayout() {
           borderTopWidth: 0,
         },
       }}
-      initialRouteName="create"
+      initialRouteName="index"
     >
       <Tabs.Screen
         name="index"
@@ -84,13 +84,22 @@ export default function TabLayout() {
 
           tabBarShowLabel: false,
           headerShown: false,
-          tabBarIcon: ({ color, focused, size }) => (
+          tabBarButton: ({}) => (
             <Ionicons
-              name={focused ? "add-circle-outline" : "add-circle"}
+              onPress={() => router.push("/(others)/create/post")}
+              className="self-center mt-[5px]"
+              name={"add-circle-outline"}
               size={26}
-              color={color}
+              color={"gray"}
             />
           ),
+          // tabBarIcon: ({ color, focused, size }) => (
+          //   <Ionicons
+          //     name={focused ? "add-circle-outline" : "add-circle"}
+          //     size={26}
+          //     color={color}
+          //   />
+          // ),
         }}
       />
       <Tabs.Screen

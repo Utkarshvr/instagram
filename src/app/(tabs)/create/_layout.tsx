@@ -1,29 +1,10 @@
-import Ionicons from "@expo/vector-icons/Ionicons";
-import { Stack } from "expo-router";
-import { Text } from "react-native";
+import { router } from "expo-router";
+import { useEffect } from "react";
 
-export default function _layout() {
-  return (
-    <Stack
-      screenOptions={{
-        headerStyle: {
-          backgroundColor: "#0a0a0a",
-        },
-        headerTitleStyle: { color: "#fafafa", fontFamily: "MontserratRegular" },
-        headerTintColor: "#fafafa",
-      }}
-    >
-      <Stack.Screen
-        name="post"
-        options={{
-          headerShown: true,
-          headerTitle: () => (
-            <Text className="text-neutral-50 font-montserratSemiBold">
-              New post
-            </Text>
-          ),
-        }}
-      />
-    </Stack>
-  );
+export default function layout() {
+  useEffect(() => {
+    router.push("/(others)/create/post");
+  }, []);
+
+  return null;
 }

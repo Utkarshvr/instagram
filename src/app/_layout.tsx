@@ -77,7 +77,7 @@ export default function RootLayout() {
     else if (!user) router.replace("/(auth)/login");
   }, [user, initializing]);
 
-  console.log({ user });
+  // console.log({ user });
 
   if (initializing) return <LoadingScreen />;
 
