@@ -1,5 +1,6 @@
 import * as React from "react";
 import * as ImagePicker from "expo-image-picker";
+import { useVideoPlayer, VideoView } from "expo-video";
 import LoadingScreen from "@/src/components/LoadingScreen";
 import { useEffect, useState } from "react";
 import {
@@ -36,6 +37,8 @@ export default function CreatePostScreen() {
     ImagePicker.ImagePickerAsset[]
   >([]);
 
+  const [videoSource, setVideoSource] = useState("");
+
   async function selectItems() {
     try {
       setIsOpeningImageLib(true);
@@ -43,6 +46,8 @@ export default function CreatePostScreen() {
         mediaTypes: ImagePicker.MediaTypeOptions.All,
         // allowsEditing: true,
         allowsMultipleSelection: true,
+        quality: 0.5,
+        // videoQuality:,
       });
 
       // Ensure result is not canceled and has assets before updating state
@@ -56,6 +61,11 @@ export default function CreatePostScreen() {
     }
   }
 
+  const player = useVideoPlayer(videoSource, (player) => {
+    player.loop = true;
+    player.play();
+  });
+
   useEffect(() => {
     if (selectedItems?.length > 0) return;
     selectItems();
@@ -63,7 +73,6 @@ export default function CreatePostScreen() {
 
   const ref = React.useRef<ICarouselInstance>(null);
   const progress = useSharedValue<number>(0);
-  // console.log({ progress });
 
   const onPressPagination = (index: number) => {
     ref.current?.scrollTo({
@@ -89,20 +98,23 @@ export default function CreatePostScreen() {
 
   async function uploadPost() {
     if (selectedItems.length === 0) return toastMsg("No image selected");
-
+    let errorWhileUploadingOnCloudinary = false;
     // Upload images to cloudinary
     setIsUploadingItems(true);
     const uploadedItems = [];
     await Promise.all(
       selectedItems.map(async (item) => {
+        console.log(item.fileName, item.type);
         return await upload(myCld, {
           file: item.uri,
           options: {
             upload_preset: process.env.EXPO_PUBLIC_CLOUDINARY_PRESET_NAME,
             unsigned: true,
+            resource_type: "auto",
           },
           callback: (error, response) => {
             console.log(error, response);
+            if (error || !response) errorWhileUploadingOnCloudinary = true;
             if (response) {
               uploadedItems.push({
                 public_id: response.public_id,
@@ -117,6 +129,12 @@ export default function CreatePostScreen() {
         });
       })
     );
+
+    if (errorWhileUploadingOnCloudinary) {
+      setIsUploadingItems(false);
+      return;
+    }
+
     try {
       // Upload to firebase
       await createFB("posts", {
@@ -135,6 +153,17 @@ export default function CreatePostScreen() {
     }
   }
 
+  const setVideoSourceFunction = (currentIndex: number) => {
+    const currentItem = selectedItems[currentIndex];
+    if (currentItem && currentItem.type === "video") {
+      setVideoSource(currentItem.uri);
+    }
+  };
+
+  useEffect(() => {
+    setVideoSourceFunction(0);
+  }, [selectedItems]);
+
   if (isOpeningImageLib) return <LoadingScreen />;
 
   return (
@@ -147,7 +176,9 @@ export default function CreatePostScreen() {
               ref={ref}
               width={width}
               height={width}
+              loop={false}
               onProgressChange={progress}
+              onSnapToItem={(index) => setVideoSourceFunction(index)} // Track current index
               renderItem={({ item }) => (
                 <View
                   style={{
@@ -155,17 +186,28 @@ export default function CreatePostScreen() {
                     borderWidth: 1,
                     justifyContent: "center",
                   }}
-                  // className="bg-sky-500"
                 >
-                  <Image
-                    key={item.uri}
-                    source={{ uri: item.uri }}
-                    style={{
-                      width: width,
-                      height: width,
-                      objectFit: "scale-down",
-                    }}
-                  />
+                  {item.type === "image" ? (
+                    <Image
+                      key={item.uri}
+                      source={{ uri: item.uri }}
+                      style={{
+                        width: width,
+                        height: width,
+                        objectFit: "scale-down",
+                      }}
+                    />
+                  ) : (
+                    <VideoView
+                      style={{
+                        width: width,
+                        height: width,
+                      }}
+                      player={player}
+                      allowsFullscreen
+                      allowsPictureInPicture
+                    />
+                  )}
                 </View>
               )}
             />
@@ -205,7 +247,7 @@ export default function CreatePostScreen() {
         )}
         <TouchableOpacity className="mx-auto" onPress={selectItems}>
           <Text className="text-sky-500 font-montserratSemiBold text-sm pt-2">
-            Add images
+            Add media
           </Text>
         </TouchableOpacity>
 
