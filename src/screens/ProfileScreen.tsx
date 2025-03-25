@@ -16,6 +16,7 @@ import {
   checkFriendRequestByUserID,
   fetchFollowers,
   fetchFollowing,
+  fetchPosts,
   removeFollowRequest,
   sendFollowRequest,
   unfollowUser,
@@ -23,6 +24,8 @@ import {
 import { useEffect, useState } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import useProfileStore from "../store/useProfileStore";
+import POST_TYPE from "../types/POST_TYPE";
+import PostCard from "../components/PostCard";
 
 export default function ProfileScreen({
   user,
@@ -50,6 +53,7 @@ export default function ProfileScreen({
 
   const [isReqReceived, setIsReqReceived] = useState(false);
   const [reqID, setReqID] = useState<string | null>(null);
+  const [Posts, setPosts] = useState<POST_TYPE[]>([]);
 
   const followUser = async () => {
     if (currentUser?.uid && user?.uid) {
@@ -191,8 +195,15 @@ export default function ProfileScreen({
     if (isMe) fetchFlwrsAndFlwngs(currentUserId);
   }, [currentUserId, targetUserId, isMe]);
 
-  console.log({ isMe });
+  useEffect(() => {
+    if (targetUserId)
+      (async () => {
+        const { data, error, isSuccess } = await fetchPosts(targetUserId);
+        setPosts(data);
+      })();
+  }, [targetUserId]);
 
+  console.log({ Posts });
   return (
     <ScrollView
       className="bg-neutral-950 flex-1"
@@ -333,6 +344,12 @@ export default function ProfileScreen({
             </View>
           </TouchableOpacity>
         )}
+      </View>
+
+      <View className="w-full flex flex-row flex-wrap">
+        {Posts.map((post) => (
+          <PostCard key={post.id} post={post} isFeatured />
+        ))}
       </View>
     </ScrollView>
   );

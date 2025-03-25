@@ -18,6 +18,7 @@ export default function _layout() {
       }}
     >
       <Stack.Screen name="edit-profile" options={{ title: "Edit profile" }} />
+      <Stack.Screen name="post/[postId]" options={{ title: "Post" }} />
       <Stack.Screen
         name="create"
         options={{

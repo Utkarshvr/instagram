@@ -15,6 +15,7 @@ import FlwReqType from "../types/FlwReqType";
 import UserType from "../types/UserType";
 import COLLECTION_NAME_TYPE from "../types/COLLECTION_NAME_TYPE";
 import { FirebaseError } from "firebase/app";
+import POST_TYPE from "../types/POST_TYPE";
 
 export const sendFollowRequest = async (
   currentUserId: string,
@@ -419,5 +420,35 @@ export async function deleteFB(
   } catch (error) {
     console.error("Error deleting document:", error);
     return { isSuccess: false, error: error as FirebaseError };
+  }
+}
+
+export async function fetchPosts(targetUserID: string) {
+  try {
+    // Create a query to fetch only posts where owner === targetUserID
+    const ref = query(
+      collection(db, "posts"),
+      where("owner", "==", targetUserID)
+    );
+
+    const snapshot = await getDocs(ref);
+
+    // Convert Firestore data to POST_TYPE[]
+    const data = snapshot.docs.map(
+      (doc) =>
+        ({
+          id: doc.id,
+          ...doc.data(),
+        } as POST_TYPE)
+    );
+
+    return {
+      isSuccess: true,
+      error: null,
+      data,
+    };
+  } catch (error) {
+    console.log(error);
+    return { isSuccess: false, error: error as FirebaseError, data: null };
   }
 }
