@@ -1,14 +1,16 @@
 import { signOut } from "firebase/auth";
 import { AdvancedImage } from "cloudinary-react-native";
-import { Cloudinary } from "@cloudinary/url-gen";
 import { Button, SafeAreaView } from "react-native";
 import { auth } from "../_layout";
+import { myCld } from "@/src/lib/cloudinary";
 
-const myCld = new Cloudinary({
-  cloud: {
-    cloudName: "dxxxuk7hc",
-  },
-});
+// Import required actions and qualifiers.
+import { thumbnail } from "@cloudinary/url-gen/actions/resize";
+import { byRadius } from "@cloudinary/url-gen/actions/roundCorners";
+import { focusOn } from "@cloudinary/url-gen/qualifiers/gravity";
+import { FocusOn } from "@cloudinary/url-gen/qualifiers/focusOn";
+import { autoLow } from "@cloudinary/transformation-builder-sdk/qualifiers/quality";
+import { quality } from "@cloudinary/transformation-builder-sdk/actions/delivery";
 
 const myImage = myCld.image("pokedex_315bf9a908");
 

@@ -19,11 +19,19 @@ import Carousel, {
   Pagination,
 } from "react-native-reanimated-carousel";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { toastMsg } from "@/src/utils/helpers";
+import { upload } from "cloudinary-react-native";
+import { myCld } from "@/src/lib/cloudinary";
+import { createFB } from "@/src/utils/firebase-helpers";
+import POST_TYPE from "@/src/types/POST_TYPE";
+import { router } from "expo-router";
+import { auth } from "@/src/app/_layout";
 
 const width = Dimensions.get("window").width;
 
 export default function CreatePostScreen() {
   const [isOpeningImageLib, setIsOpeningImageLib] = useState(false);
+  const [isUploadingItems, setIsUploadingItems] = useState(false);
   const [selectedItems, setSelectedItems] = useState<
     ImagePicker.ImagePickerAsset[]
   >([]);
@@ -49,12 +57,13 @@ export default function CreatePostScreen() {
   }
 
   useEffect(() => {
-    if (selectedItems && selectedItems?.length > 0) return;
+    if (selectedItems?.length > 0) return;
     selectItems();
   }, []);
 
   const ref = React.useRef<ICarouselInstance>(null);
   const progress = useSharedValue<number>(0);
+  // console.log({ progress });
 
   const onPressPagination = (index: number) => {
     ref.current?.scrollTo({
@@ -67,18 +76,71 @@ export default function CreatePostScreen() {
     });
   };
 
+  const removeImg = () => {
+    console.log(progress.get());
+    setSelectedItems((prev) =>
+      prev.filter((_value, index) => index !== progress.get())
+    );
+  };
+
   const [form, setForm] = useState({
     caption: "",
   });
 
-  async function uploadPost() {}
+  async function uploadPost() {
+    if (selectedItems.length === 0) return toastMsg("No image selected");
+
+    // Upload images to cloudinary
+    setIsUploadingItems(true);
+    const uploadedItems = [];
+    await Promise.all(
+      selectedItems.map(async (item) => {
+        return await upload(myCld, {
+          file: item.uri,
+          options: {
+            upload_preset: process.env.EXPO_PUBLIC_CLOUDINARY_PRESET_NAME,
+            unsigned: true,
+          },
+          callback: (error, response) => {
+            console.log(error, response);
+            if (response) {
+              uploadedItems.push({
+                public_id: response.public_id,
+                asset_id: response.asset_id,
+                folder: response.folder,
+                resource_type: response.resource_type,
+                secure_url: response.secure_url,
+              });
+            }
+            if (error) toastMsg(error.message);
+          },
+        });
+      })
+    );
+    try {
+      // Upload to firebase
+      await createFB("posts", {
+        items: uploadedItems,
+        caption: form.caption,
+        type: "post",
+        owner: auth.currentUser.uid,
+      } as POST_TYPE);
+      toastMsg("Uploaded Successfully!");
+      router.back();
+    } catch (error) {
+      console.log(error);
+      toastMsg(error.message || "Unkown error");
+    } finally {
+      setIsUploadingItems(false);
+    }
+  }
 
   if (isOpeningImageLib) return <LoadingScreen />;
 
   return (
     <View className="flex-1 bg-neutral-950">
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        {selectedItems && (
+        {selectedItems.length > 0 && (
           <View className="relative">
             <Carousel
               data={selectedItems}
@@ -121,19 +183,31 @@ export default function CreatePostScreen() {
               }}
               onPress={onPressPagination}
             />
+
             <TouchableOpacity
-              className="absolute bottom-4 right-4 bg-white rounded-full"
-              onPress={selectItems}
+              className="absolute top-4 left-4"
+              onPress={removeImg}
             >
               <Ionicons
-                name="add-circle-outline"
-                size={36}
-                color={"#333"}
-                className="bg-transparent rounded-full"
+                name="close"
+                size={24}
+                color={"white"}
+                className="bg-neutral-900 rounded-full p-2"
               />
             </TouchableOpacity>
           </View>
         )}
+
+        {selectedItems.length === 0 && (
+          <Text className="p-2 text-sm text-neutral-400 font-montserratSemiBold">
+            No Image is selected
+          </Text>
+        )}
+        <TouchableOpacity className="mx-auto" onPress={selectItems}>
+          <Text className="text-sky-500 font-montserratSemiBold text-sm pt-2">
+            Add images
+          </Text>
+        </TouchableOpacity>
 
         <View className="px-2 py-4">
           <TextInput
@@ -160,12 +234,18 @@ export default function CreatePostScreen() {
       <View className="flex gap-2 items-center justify-center w-[95%] fixed bottom-4 left-[2.5%] right-[2.5%]">
         <TouchableOpacity
           className="w-full"
-          // disabled={!isFormValid && isLogging}
+          disabled={selectedItems.length === 0}
           onPress={uploadPost}
         >
-          <View className={`bg-sky-500 p-2 rounded-md w-full items-center`}>
-            {false ? (
-              <ActivityIndicator size={"large"} />
+          <View
+            className={`${
+              selectedItems.length === 0 || isUploadingItems
+                ? "bg-neutral-800"
+                : "bg-sky-500"
+            } p-2 rounded-md w-full items-center`}
+          >
+            {isUploadingItems ? (
+              <ActivityIndicator size={"small"} />
             ) : (
               <Text className="font-montserrat text-white">Upload</Text>
             )}
