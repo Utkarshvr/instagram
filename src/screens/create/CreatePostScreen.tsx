@@ -104,7 +104,7 @@ export default function CreatePostScreen() {
     const uploadedItems = [];
     await Promise.all(
       selectedItems.map(async (item) => {
-        console.log(item.fileName, item.type);
+        console.log(item);
         return await upload(myCld, {
           file: item.uri,
           options: {

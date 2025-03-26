@@ -1,8 +1,8 @@
-import { Dimensions, StyleSheet, TouchableOpacity } from "react-native";
+import * as VideoThumbnails from "expo-video-thumbnails";
+import { Dimensions, Image, StyleSheet, TouchableOpacity } from "react-native";
 import POST_TYPE from "../types/POST_TYPE";
-import { AdvancedImage } from "cloudinary-react-native";
-import { myCld } from "@/src/lib/cloudinary";
 import { router } from "expo-router";
+import { useEffect, useState } from "react";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -13,7 +13,28 @@ export default function PostCard({
   isFeatured: boolean;
   post: POST_TYPE;
 }) {
-  const myImage = myCld.image(post.items[0].public_id);
+  const firstItem = post.items[0];
+  const [thumbnail, setThumbnail] = useState(firstItem.secure_url);
+
+  useEffect(() => {
+    if (firstItem.resource_type === "video") {
+      (async () => {
+        try {
+          const { uri } = await VideoThumbnails.getThumbnailAsync(
+            firstItem.secure_url,
+            {
+              time: 1000,
+            }
+          );
+          setThumbnail(uri);
+        } catch (e) {
+          console.warn(e);
+        }
+      })();
+    } else {
+      setThumbnail(firstItem.secure_url);
+    }
+  }, [post]);
 
   if (isFeatured)
     return (
@@ -27,10 +48,14 @@ export default function PostCard({
           })
         }
       >
-        <AdvancedImage
-          cldImg={myImage}
+        <Image
+          source={{ uri: thumbnail }}
           style={{ width: screenWidth / 3, height: screenWidth / 3 }}
         />
+        {/* <AdvancedImage
+          cldImg={cldImg}
+          style={{ width: screenWidth / 3, height: screenWidth / 3 }}
+        /> */}
       </TouchableOpacity>
     );
 }

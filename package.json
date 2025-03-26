@@ -59,7 +59,8 @@
     "tailwindcss": "3.4.17",
     "undefined": "@expo/vector-icons/Feather",
     "zustand": "^5.0.3",
-    "expo-video": "~2.0.6"
+    "expo-video": "~2.0.6",
+    "expo-video-thumbnails": "~9.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

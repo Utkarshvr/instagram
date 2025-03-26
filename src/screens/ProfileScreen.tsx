@@ -267,7 +267,9 @@ export default function ProfileScreen({
           )}
           <View className="flex-row gap-4">
             <TouchableOpacity className="gap-1 items-center">
-              <Text className="text-neutral-200 font-montserrat">24</Text>
+              <Text className="text-neutral-200 font-montserrat">
+                {Posts.length}
+              </Text>
               <Text className="text-neutral-400 font-montserratSemiBold">
                 Posts
               </Text>

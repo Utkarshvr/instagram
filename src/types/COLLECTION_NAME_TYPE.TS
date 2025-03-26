@@ -3,6 +3,7 @@ type COLLECTION_NAME_TYPE =
   | "following"
   | "followers"
   | "users"
+  | "likes"
   | "posts";
 
 export default COLLECTION_NAME_TYPE;
