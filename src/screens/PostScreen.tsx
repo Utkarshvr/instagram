@@ -23,7 +23,7 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import UserType from "../types/UserType";
 import { router } from "expo-router";
 import { useActionSheet } from "@expo/react-native-action-sheet";
-import { toastMsg } from "../utils/helpers";
+import { shortenString, toastMsg } from "../utils/helpers";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -119,6 +119,10 @@ export default function PostScreen() {
         }
       }
     );
+  }
+
+  function openCommentsSheet(){
+    
   }
 
   useEffect(() => {
@@ -248,25 +252,38 @@ export default function PostScreen() {
             }}
             onPress={onPressPagination}
           />
-          <TouchableOpacity
-            className=" absolute bottom-4 left-4 bg-neutral-900 rounded-full px-4 py-2"
-            onPress={togglePostLike}
-          >
-            <Ionicons
-              name={`${isLiked ? "heart" : "heart-outline"}`}
-              color={isLiked ? "red" : "white"}
-              size={32}
-            />
-            <Text className="text-xs text-white font-montserratSemiBold text-center">
-              {totalLikes}
-            </Text>
-          </TouchableOpacity>
         </View>
 
-        <View className="p-2">
-          <Text className="text-neutral-300 font-montserrat">
-            {post.caption}
-          </Text>
+        <View className="p-2 flex-row items-center justify-between">
+          <View className="flex-[0.8]">
+            <Text
+              numberOfLines={2}
+              className="text-neutral-300 font-montserrat"
+            >
+              {post.caption}
+            </Text>
+          </View>
+
+          <View className="flex-[0.2] flex-row gap-3 self-start">
+            <TouchableOpacity onPress={togglePostLike}>
+              <Ionicons
+                name={`${isLiked ? "heart" : "heart-outline"}`}
+                color={isLiked ? "red" : "white"}
+                size={32}
+              />
+              <Text className="text-xs text-white font-montserratSemiBold text-center">
+                {totalLikes}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+            onPress={openCommentsSheet}
+            >
+              <Ionicons name={"chatbubble-outline"} color={"white"} size={32} />
+              <Text className="text-xs text-white font-montserratSemiBold text-center">
+                {/* {totalComments} */}
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
     );
