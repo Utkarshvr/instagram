@@ -37,6 +37,7 @@ export const auth = initializeAuth(app, {
 export const db = getFirestore(app);
 
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function RootLayout() {
   const [loaded] = useFonts({
@@ -82,16 +83,18 @@ export default function RootLayout() {
   if (initializing) return <LoadingScreen />;
 
   return (
-    <ActionSheetProvider>
-      <>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(tabs)" />
-          <Stack.Screen name="(auth)" />
-          <Stack.Screen name="(others)" />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-        <StatusBar style="light" />
-      </>
-    </ActionSheetProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ActionSheetProvider>
+        <>
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="(tabs)" />
+            <Stack.Screen name="(auth)" />
+            <Stack.Screen name="(others)" />
+            <Stack.Screen name="+not-found" />
+          </Stack>
+          <StatusBar style="light" />
+        </>
+      </ActionSheetProvider>
+    </GestureHandlerRootView>
   );
 }

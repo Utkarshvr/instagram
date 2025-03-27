@@ -2,10 +2,12 @@ import Carousel, {
   ICarouselInstance,
   Pagination,
 } from "react-native-reanimated-carousel";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Dimensions,
   Image,
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   Text,
   TouchableHighlight,
@@ -23,7 +25,15 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import UserType from "../types/UserType";
 import { router } from "expo-router";
 import { useActionSheet } from "@expo/react-native-action-sheet";
-import { shortenString, toastMsg } from "../utils/helpers";
+import { toastMsg } from "../utils/helpers";
+import BottomSheet, {
+  BottomSheetFooter,
+  BottomSheetScrollView,
+  BottomSheetTextInput,
+  BottomSheetView,
+} from "@gorhom/bottom-sheet";
+import { TextInput } from "react-native-gesture-handler";
+import useUserStore from "../store/userStore";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -32,6 +42,8 @@ export default function PostScreen() {
   // Convert postId to a string
   const uid = Array.isArray(postId) ? postId[0] : postId;
   const currentUserID = auth.currentUser.uid;
+
+  const { user } = useUserStore();
 
   const [post, setPost] = useState<POST_TYPE>();
   const [owner, setOwner] = useState<UserType>();
@@ -121,10 +133,6 @@ export default function PostScreen() {
     );
   }
 
-  function openCommentsSheet(){
-    
-  }
-
   useEffect(() => {
     (async () => {
       const { data } = await fetchDocByID<POST_TYPE>("posts", uid);
@@ -155,6 +163,20 @@ export default function PostScreen() {
       })();
     }
   }, [post]);
+
+  // ref
+  const bottomSheetRef = useRef<BottomSheet>(null);
+
+  // callbacks
+  const handleSheetChanges = useCallback((index: number) => {
+    console.log("handleSheetChanges", index);
+  }, []);
+  const handleClosePress = () => bottomSheetRef.current.close();
+  function openCommentsSheet() {
+    bottomSheetRef.current.snapToIndex(1);
+  }
+
+  const [commentText, setCommentText] = useState("");
 
   if (post)
     return (
@@ -275,9 +297,7 @@ export default function PostScreen() {
                 {totalLikes}
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity
-            onPress={openCommentsSheet}
-            >
+            <TouchableOpacity onPress={openCommentsSheet}>
               <Ionicons name={"chatbubble-outline"} color={"white"} size={32} />
               <Text className="text-xs text-white font-montserratSemiBold text-center">
                 {/* {totalComments} */}
@@ -285,6 +305,55 @@ export default function PostScreen() {
             </TouchableOpacity>
           </View>
         </View>
+
+        {/* Comments Sheet */}
+        <BottomSheet
+          snapPoints={["70%", "100%"]}
+          ref={bottomSheetRef}
+          onChange={handleSheetChanges}
+          onClose={handleClosePress}
+          enablePanDownToClose
+          index={-1}
+          handleStyle={{ backgroundColor: "#262626", borderRadius: 20 }}
+          backgroundStyle={{ backgroundColor: "#262626", borderRadius: 20 }}
+          handleIndicatorStyle={{ backgroundColor: "white" }}
+        >
+          {/* Use BottomSheetScrollView instead of ScrollView */}
+          <BottomSheetScrollView>
+            {Array.from({ length: 100 }).map((e) => (
+              <Text
+                className="text-white text-2xl font-montserratBold"
+                key={Math.random()}
+              >
+                Awesome 🎉
+              </Text>
+            ))}
+          </BottomSheetScrollView>
+          {/* ✅ Fixed Input at Bottom */}
+
+          <View className="py-2 px-2 flex flex-row gap-4 items-center justify-between w-full max-h-[180px]">
+            <Image
+              source={
+                user.picture
+                  ? { uri: user.picture }
+                  : require("@/src/assets/images/person.png")
+              }
+              className="w-[28px] h-[28px] rounded-full flex-[0.1]"
+            />
+            <TextInput
+              value={commentText}
+              onChangeText={(text) => setCommentText(text)}
+              className="rounded-md w-full text-neutral-50 font-montserrat flex-[0.8]"
+              placeholder={`Comment as ${user.username}...`}
+              placeholderTextColor={"white"}
+              multiline
+            />
+
+            <TouchableOpacity className="ml-auto flex-[0.1]">
+              <Ionicons name="send" size={28} color={"#0ea5e9"} />
+            </TouchableOpacity>
+          </View>
+        </BottomSheet>
       </ScrollView>
     );
 }
