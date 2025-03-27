@@ -4,6 +4,7 @@ type COLLECTION_NAME_TYPE =
   | "followers"
   | "users"
   | "likes"
+  | "comments"
   | "posts";
 
 export default COLLECTION_NAME_TYPE;
