@@ -153,13 +153,14 @@ export default function PostCard({
           where("itemId", "==", postId)
         );
         const snapshot = await getDocs(ref);
-        // console.log({ docs: snapshot.docs });
+        setTotalLikes(snapshot.size);
+        console.log({ size: snapshot.size });
+
         const currentUserLike = snapshot.docs.find(
           (doc) => doc.data().likedBy === currentUserID
         );
         console.log({ currentUserLike: currentUserLike.data() });
 
-        setTotalLikes(snapshot.size);
         setIsLiked(currentUserLike.exists ? true : false);
         setLikeID(currentUserLike.id);
       })();
@@ -242,7 +243,9 @@ export default function PostCard({
       })();
     }
   }, [comments]);
-  console.log("Featured: ", isFeatured, { postId });
+  // console.log("Featured: ", isFeatured, { postId });
+  console.log(postId, { totalLikes, comments });
+
   if (isFeatured)
     return (
       <TouchableOpacity
@@ -265,8 +268,6 @@ export default function PostCard({
         /> */}
       </TouchableOpacity>
     );
-
-  console.log({ totalLikes, comments });
 
   return (
     <>
