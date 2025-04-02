@@ -8,9 +8,11 @@ import { doc, updateDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
+  Animated,
   Image,
   SafeAreaView,
   ScrollView,
+  Switch,
   Text,
   TextInput,
   TouchableOpacity,
@@ -24,6 +26,12 @@ export default function EditProfile() {
   const { user, setUser } = useUserStore();
   const navigation = useNavigation();
   const { showActionSheetWithOptions } = useActionSheet();
+  // SWITCH
+  const [isPrivate, setIsPrivate] = useState(user.isPrivate);
+
+  const toggleSwitch = () => setIsPrivate((prev) => !prev);
+
+  const thumbColor = isPrivate ? "#F0F8FF" : "#ffffff"; // AliceBlue when on, White when off
 
   const [form_value, setForm_value] = useState({
     name: user?.name || "",
@@ -105,6 +113,7 @@ export default function EditProfile() {
         name: form_value.name,
         username: form_value.username,
         bio: form_value.bio,
+        isPrivate,
       });
 
       setUser({
@@ -113,6 +122,7 @@ export default function EditProfile() {
         name: form_value.name,
         username: form_value.username,
         bio: form_value.bio,
+        isPrivate,
       } as UserType);
 
       toastMsg("Profile updated");
@@ -138,6 +148,13 @@ export default function EditProfile() {
     });
   }, [navigation, form_value, isUpdatingProfile, updateProfile]);
 
+  useEffect(() => {
+    if (user) {
+      console.log({ USER_PRIVATE: user.isPrivate });
+      setIsPrivate(user.isPrivate);
+    }
+  }, [user]);
+
   return (
     <SafeAreaView className="bg-neutral-950  flex-1 py-2">
       <ScrollView>
@@ -160,9 +177,9 @@ export default function EditProfile() {
             </Text>
           </TouchableOpacity>
         </View>
-        <View className="gap-4">
+        <View className="px-4 gap-4">
           {forms.map((f) => (
-            <View key={f} className="px-4">
+            <View key={f}>
               <Text className="font-montserrat text-sm text-neutral-200">
                 {capitalizeFirstLetter(f)}
               </Text>
@@ -178,6 +195,18 @@ export default function EditProfile() {
               />
             </View>
           ))}
+          <View className="flex flex-row gap-2 items-center justify-between">
+            <Text className="font-montserrat text-sm text-neutral-200">
+              {"Private account"}
+            </Text>
+            <Switch
+              trackColor={{ false: "#A9A9A9", true: "#4682B4" }} // DarkGray when off, SteelBlue when on
+              thumbColor={thumbColor}
+              ios_backgroundColor="#A9A9A9"
+              onValueChange={toggleSwitch}
+              value={isPrivate}
+            />
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
