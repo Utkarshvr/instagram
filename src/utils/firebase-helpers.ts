@@ -346,7 +346,7 @@ export async function fetchDocByID<T = any>(
     return {
       isSuccess: true,
       error: null,
-      data: { uid: snap.id, ...snap.data() } as T,
+      data: { uid: snap.id, id: snap.id, ...snap.data() } as T,
     };
   } catch (error) {
     console.error("Error fetching doc:", error);
