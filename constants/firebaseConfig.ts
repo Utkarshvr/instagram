@@ -1,11 +1,11 @@
 const firebaseConfig = {
-  apiKey: "AIzaSyDBd91HGT2o2s2VZnD0uwsafCT8wODpQAw",
-  authDomain: "ig-clone-app-681b4.firebaseapp.com",
-  projectId: "ig-clone-app-681b4",
-  storageBucket: "ig-clone-app-681b4.firebasestorage.app",
-  messagingSenderId: "176606712558",
-  appId: "1:176606712558:web:c68d7f4b7aeeb7603019ff",
-  measurementId: "G-3NNC4FLPK5",
+  apiKey: process.env.EXPO_PUBLIC_FB_API_KEY,
+  authDomain: process.env.EXPO_PUBLIC_FB_AUTH_DOMAIN,
+  projectId: process.env.EXPO_PUBLIC_FB_PROJECT_ID,
+  storageBucket: process.env.EXPO_PUBLIC_FB_STORAGE_BUCKET,
+  messagingSenderId: process.env.EXPO_PUBLIC_FB_MESSAGING_SENDER_ID,
+  appId: process.env.EXPO_PUBLIC_FB_APP_ID,
+  measurementId: process.env.EXPO_PUBLIC_FB_MEASUREMENT_ID,
 };
 
 export default firebaseConfig;
