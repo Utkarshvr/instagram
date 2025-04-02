@@ -1,9 +1,5 @@
-import { ScrollView, Text, View } from "react-native";
+import ExploreScreen from "@/src/screens/ExploreScreen";
 
-export default function ExploreFeed() {
-  return (
-    <ScrollView className="bg-neutral-950 flex-1 p-4">
-      <Text className="text-white  font-montserrat">Explore Feed</Text>
-    </ScrollView>
-  );
+export default function index() {
+  return <ExploreScreen />;
 }

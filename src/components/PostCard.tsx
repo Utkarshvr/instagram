@@ -266,6 +266,7 @@ export default function PostCard({
     );
 
   return (
+    <>
     <View>
       {owner && (
         <View className="p-2 flex-row items-center justify-between">
@@ -450,5 +451,7 @@ export default function PostCard({
         </View>
       </BottomSheet>
     </View>
+    </>
+
   );
 }
