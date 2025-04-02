@@ -452,3 +452,43 @@ export async function fetchPosts(targetUserID: string) {
     return { isSuccess: false, error: error as FirebaseError, data: null };
   }
 }
+
+export const fetchAllPosts = async (currentUserID: string) => {
+  try {
+    const postsRef = collection(db, "posts");
+    const usersRef = collection(db, "users");
+    const followersRef = collection(db, "followers");
+
+    // Get all posts
+    const postsSnapshot = await getDocs(postsRef);
+    const followersSnapshot = await getDocs(followersRef);
+    let filteredPosts = [];
+
+    for (let post of postsSnapshot.docs) {
+      const postData = post.data();
+      const ownerId = postData.owner;
+
+      // Fetch owner's user data
+      const ownerDoc = await getDoc(doc(usersRef, ownerId));
+      if (!ownerDoc.exists()) continue;
+
+      const ownerData = ownerDoc.data();
+
+      const currentUserFollowesOwner = followersSnapshot.docs.some((f) => {
+        const data = f.data();
+        return data.owner === ownerId && data.user_id === currentUserID;
+      });
+
+      const isMe = currentUserID === ownerId;
+
+      if (isMe || !ownerData.isPrivate || currentUserFollowesOwner) {
+        filteredPosts.push({ id: post.id, ...postData });
+      }
+    }
+
+    return filteredPosts;
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    return [];
+  }
+};
