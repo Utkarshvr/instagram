@@ -5,7 +5,12 @@ import { auth } from "../_layout";
 import { useEffect, useState } from "react";
 import LoadingScreen from "@/src/components/LoadingScreen";
 import useUserStore from "@/src/store/userStore";
-import { Image, Text } from "react-native";
+import {
+  Image,
+  Text,
+  TouchableHighlight,
+  TouchableOpacity,
+} from "react-native";
 
 export default function TabLayout() {
   const [hasVerifiedUsername, setHasVerifiedUsername] = useState(false);
@@ -131,6 +136,11 @@ export default function TabLayout() {
               </Text>
             );
           },
+          headerRight: () => (
+            <TouchableOpacity className="mr-2" onPress={() => auth.signOut()}>
+              <Ionicons name="log-out-outline" color={"white"} size={24} />
+            </TouchableOpacity>
+          ),
           tabBarShowLabel: false,
           tabBarIcon: ({ color, focused, size }) =>
             userInfo?.picture ? (

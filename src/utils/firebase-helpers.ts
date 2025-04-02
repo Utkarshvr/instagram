@@ -423,29 +423,79 @@ export async function deleteFB(
   }
 }
 
-export async function fetchPosts(targetUserID: string) {
+// export async function fetchPosts(targetUserID: string, currentUserID: string) {
+//   try {
+//     // Create a query to fetch only posts where owner === targetUserID
+//     const ref = query(
+//       collection(db, "posts"),
+//       where("owner", "==", targetUserID)
+//     );
+
+//     const snapshot = await getDocs(ref);
+
+//     // Convert Firestore data to POST_TYPE[]
+//     const data = snapshot.docs.map(
+//       (doc) =>
+//         ({
+//           id: doc.id,
+//           ...doc.data(),
+//         } as POST_TYPE)
+//     );
+
+//     return {
+//       isSuccess: true,
+//       error: null,
+//       data,
+//     };
+//   } catch (error) {
+//     console.log(error);
+//     return { isSuccess: false, error: error as FirebaseError, data: null };
+//   }
+// }
+export async function fetchPosts(targetUserID: string, currentUserID: string) {
   try {
-    // Create a query to fetch only posts where owner === targetUserID
-    const ref = query(
-      collection(db, "posts"),
-      where("owner", "==", targetUserID)
-    );
+    async function sendPosts() {
+      const postsRef = query(
+        collection(db, "posts"),
+        where("owner", "==", targetUserID)
+      );
+      const postsSnapshot = await getDocs(postsRef);
+      const data = postsSnapshot.docs.map(
+        (doc) =>
+          ({
+            id: doc.id,
+            ...doc.data(),
+          } as POST_TYPE)
+      );
 
-    const snapshot = await getDocs(ref);
+      return {
+        isSuccess: true,
+        error: null,
+        data,
+      };
+    }
 
-    // Convert Firestore data to POST_TYPE[]
-    const data = snapshot.docs.map(
-      (doc) =>
-        ({
-          id: doc.id,
-          ...doc.data(),
-        } as POST_TYPE)
-    );
+    const usersRef = collection(db, "users");
+    const targetUserDoc = await getDoc(doc(usersRef, targetUserID));
+    const targetUserData = targetUserDoc.data();
 
+    if (targetUserID === currentUserID) return sendPosts();
+
+    if (!targetUserData.isPrivate) return sendPosts();
+
+    // Check if following
+    const followersRef = collection(db, "followers");
+    const followersSnapshot = await getDocs(followersRef);
+    const currentUserFollowsTargetUser = followersSnapshot.docs.some((f) => {
+      const data = f.data();
+      return data.owner === targetUserDoc.id && data.user_id === currentUserID;
+    });
+
+    if (currentUserFollowsTargetUser) return sendPosts();
     return {
-      isSuccess: true,
-      error: null,
-      data,
+      isSuccess: false,
+      error: "This is a private account and you don't follow the account!",
+      data: null,
     };
   } catch (error) {
     console.log(error);
@@ -459,7 +509,6 @@ export const fetchAllPosts = async (currentUserID: string) => {
     const usersRef = collection(db, "users");
     const followersRef = collection(db, "followers");
 
-    // Get all posts
     const postsSnapshot = await getDocs(postsRef);
     const followersSnapshot = await getDocs(followersRef);
     let filteredPosts = [];

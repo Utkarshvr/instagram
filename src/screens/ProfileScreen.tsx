@@ -53,7 +53,9 @@ export default function ProfileScreen({
 
   const [isReqReceived, setIsReqReceived] = useState(false);
   const [reqID, setReqID] = useState<string | null>(null);
+  const [isFetchingPosts, setIsFetchingPosts] = useState(true);
   const [Posts, setPosts] = useState<POST_TYPE[]>([]);
+  const [hasAccess, setHasAccess] = useState(false);
 
   const followUser = async () => {
     if (currentUser?.uid && user?.uid) {
@@ -198,12 +200,17 @@ export default function ProfileScreen({
   useEffect(() => {
     if (targetUserId)
       (async () => {
-        const { data, error, isSuccess } = await fetchPosts(targetUserId);
+        setIsFetchingPosts(true);
+        const { data } = await fetchPosts(targetUserId, currentUserId);
         setPosts(data);
+        if (data === null) setHasAccess(false);
+        else setHasAccess(true);
+        setIsFetchingPosts(false);
       })();
   }, [targetUserId]);
 
   console.log({ Posts });
+
   return (
     <ScrollView
       className="bg-neutral-950 flex-1"
@@ -266,14 +273,16 @@ export default function ProfileScreen({
             />
           )}
           <View className="flex-row gap-4">
-            <TouchableOpacity className="gap-1 items-center">
-              <Text className="text-neutral-200 font-montserrat">
-                {Posts.length}
-              </Text>
-              <Text className="text-neutral-400 font-montserratSemiBold">
-                Posts
-              </Text>
-            </TouchableOpacity>
+            {hasAccess && (
+              <TouchableOpacity className="gap-1 items-center">
+                <Text className="text-neutral-200 font-montserrat">
+                  {Posts.length}
+                </Text>
+                <Text className="text-neutral-400 font-montserratSemiBold">
+                  Posts
+                </Text>
+              </TouchableOpacity>
+            )}
             <TouchableOpacity className="gap-1 items-center">
               <Text className="text-neutral-200 font-montserrat">
                 {userFollowers.length}
@@ -349,9 +358,19 @@ export default function ProfileScreen({
       </View>
 
       <View className="w-full flex flex-row flex-wrap">
-        {Posts.map((post) => (
-          <PostCard key={post.id} post={post} isFeatured />
-        ))}
+        {!isFetchingPosts &&
+          Posts &&
+          Posts.map((post) => (
+            <PostCard key={post.id} post={post} isFeatured />
+          ))}
+        {!isFetchingPosts && !hasAccess && (
+          <View className="flex flex-row gap-2 m-auto">
+            <Ionicons name="lock-closed-outline" color={"#737373"} size={16} />
+            <Text className="font-montserrat text-sm text-neutral-500">
+              This is a private account, follow to see posts!
+            </Text>
+          </View>
+        )}
       </View>
     </ScrollView>
   );
