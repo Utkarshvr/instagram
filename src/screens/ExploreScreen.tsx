@@ -16,10 +16,10 @@ export default function ExploreScreen() {
     try {
       setIsFetching(true);
       const allPosts = await fetchAllPosts(currentUserID);
-      console.log("👽 ALL POSTS: ", allPosts);
+      // console.log("👽 ALL POSTS: ", allPosts);
       setAllPosts(allPosts);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     } finally {
       setIsFetching(false);
     }

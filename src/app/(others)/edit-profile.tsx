@@ -54,7 +54,7 @@ export default function EditProfile() {
 
     if (!result.canceled) {
       const img = result.assets[0];
-      console.log({ uri: img.uri });
+      // console.log({ uri: img.uri });
       setForm_value((prev) => ({ ...prev, picture: img.uri }));
     }
   };
@@ -128,7 +128,7 @@ export default function EditProfile() {
       toastMsg("Profile updated");
       router.back();
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     } finally {
       setIsUpdatingProfile(false);
     }
@@ -150,7 +150,7 @@ export default function EditProfile() {
 
   useEffect(() => {
     if (user) {
-      console.log({ USER_PRIVATE: user.isPrivate });
+      // console.log({ USER_PRIVATE: user.isPrivate });
       setIsPrivate(user.isPrivate);
     }
   }, [user]);

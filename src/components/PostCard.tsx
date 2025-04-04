@@ -154,12 +154,12 @@ export default function PostCard({
         );
         const snapshot = await getDocs(ref);
         setTotalLikes(snapshot.size);
-        console.log({ size: snapshot.size });
+        // console.log({ size: snapshot.size });
 
         const currentUserLike = snapshot.docs.find(
           (doc) => doc.data().likedBy === currentUserID
         );
-        console.log({ currentUserLike: currentUserLike.data() });
+        // console.log({ currentUserLike: currentUserLike.data() });
 
         setIsLiked(currentUserLike.exists ? true : false);
         setLikeID(currentUserLike.id);
@@ -176,7 +176,7 @@ export default function PostCard({
 
   // callbacks
   const handleSheetChanges = useCallback((index: number) => {
-    // console.log("handleSheetChanges", index);
+    // // console.log("handleSheetChanges", index);
   }, []);
   const handleClosePress = () => bottomSheetRef.current.close();
   function openCommentsSheet() {
@@ -201,7 +201,7 @@ export default function PostCard({
 
     setCommentText("");
     const { isSuccess, error, id } = await createFB("comments", newComment);
-    console.log({ isSuccess, error, id });
+    // console.log({ isSuccess, error, id });
     if (!isSuccess) {
       setComments((prev) =>
         prev.filter((c) => c.comment !== commentText && c.owner !== user.uid)
@@ -243,8 +243,8 @@ export default function PostCard({
       })();
     }
   }, [comments]);
-  // console.log("Featured: ", isFeatured, { postId });
-  console.log(postId, { totalLikes, comments });
+  // // console.log("Featured: ", isFeatured, { postId });
+  // console.log(postId, { totalLikes, comments });
 
   if (isFeatured)
     return (
@@ -318,7 +318,7 @@ export default function PostCard({
             onProgressChange={progress}
             // onSnapToItem={(index) => setVideoSourceFunction(index)} // Track current index
             renderItem={({ item }) => {
-              // console.log({ item });
+              // // console.log({ item });
 
               return (
                 <View

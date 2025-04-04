@@ -55,7 +55,7 @@ export default function CreatePostScreen() {
         setSelectedItems((prev) => [...prev, ...result.assets]);
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     } finally {
       setIsOpeningImageLib(false);
     }
@@ -86,7 +86,7 @@ export default function CreatePostScreen() {
   };
 
   const removeImg = () => {
-    console.log(progress.get());
+    // console.log(progress.get());
     setSelectedItems((prev) =>
       prev.filter((_value, index) => index !== progress.get())
     );
@@ -104,7 +104,7 @@ export default function CreatePostScreen() {
     const uploadedItems = [];
     await Promise.all(
       selectedItems.map(async (item) => {
-        console.log(item);
+        // console.log(item);
         return await upload(myCld, {
           file: item.uri,
           options: {
@@ -113,7 +113,7 @@ export default function CreatePostScreen() {
             resource_type: "auto",
           },
           callback: (error, response) => {
-            console.log(error, response);
+            // console.log(error, response);
             if (error || !response) errorWhileUploadingOnCloudinary = true;
             if (response) {
               uploadedItems.push({
@@ -146,7 +146,7 @@ export default function CreatePostScreen() {
       toastMsg("Uploaded Successfully!");
       router.back();
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       toastMsg(error.message || "Unkown error");
     } finally {
       setIsUploadingItems(false);

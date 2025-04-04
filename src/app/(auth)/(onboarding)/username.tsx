@@ -38,7 +38,7 @@ export default function register() {
         where("username", "==", username)
       );
       const querySnapshot = await getDocs(q);
-      console.log("Passed getDocs");
+      // console.log("Passed getDocs");
 
       if (!querySnapshot.empty) {
         ToastAndroid.showWithGravityAndOffset(
@@ -57,7 +57,7 @@ export default function register() {
         username: username,
       });
       router.replace("/(tabs)");
-      console.log("Passed updateDoc");
+      // console.log("Passed updateDoc");
     } catch (e: any) {
       const error = e as FirebaseError;
       ToastAndroid.showWithGravityAndOffset(

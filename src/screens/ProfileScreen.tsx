@@ -65,7 +65,7 @@ export default function ProfileScreen({
         setisFollowed(!isTargetUserPrivate ? true : false);
         setHasRequested(isTargetUserPrivate ? true : false);
       } catch (error) {
-        console.log(error);
+        // console.log(error);
       } finally {
         setIsBtnDisabled(false);
       }
@@ -79,10 +79,10 @@ export default function ProfileScreen({
       if (response === true) {
         setHasRequested(false);
       } else {
-        console.log("Couldn't remove request");
+        // console.log("Couldn't remove request");
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     } finally {
       setIsBtnDisabled(false);
     }
@@ -95,16 +95,16 @@ export default function ProfileScreen({
       if (response === true) {
         setisFollowed(false);
       } else {
-        console.log("Couldn't unfollow");
+        // console.log("Couldn't unfollow");
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     } finally {
       setIsBtnDisabled(false);
     }
   };
   const acceptReq = async () => {
-    if (!reqID) return console.log("reqID is not present");
+    if (!reqID) return // console.log("reqID is not present");
     try {
       setIsConfirmBtnDisabled(true);
 
@@ -116,16 +116,16 @@ export default function ProfileScreen({
       if (response === true) {
         setIsReqReceived(false);
       } else {
-        console.log("Couldn't  accept request");
+        // console.log("Couldn't  accept request");
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     } finally {
       setIsConfirmBtnDisabled(false);
     }
   };
   const deleteReq = async () => {
-    if (!reqID) return console.log("reqID is not present");
+    if (!reqID) return // console.log("reqID is not present");
     try {
       setIsCancelBtnDisabled(true);
 
@@ -133,10 +133,10 @@ export default function ProfileScreen({
       if (response === true) {
         setIsReqReceived(false);
       } else {
-        console.log("Couldn't cancel request");
+        // console.log("Couldn't cancel request");
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     } finally {
       setIsCancelBtnDisabled(false);
     }
@@ -147,16 +147,16 @@ export default function ProfileScreen({
 
   async function fetchFlwrsAndFlwngs(userID: string) {
     try {
-      console.log({ userID });
+      // console.log({ userID });
       const flwrs = await fetchFollowers(userID);
       const flwngs = await fetchFollowing(userID);
 
-      console.log({ flwrs, flwngs });
+      // console.log({ flwrs, flwngs });
 
       setUserFollowers(flwrs);
       setUserFollowing(flwngs);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   }
 
@@ -170,11 +170,11 @@ export default function ProfileScreen({
             currentUserId,
             targetUserId
           );
-          console.log({ hasRequested, isFollowing });
+          // console.log({ hasRequested, isFollowing });
           setisFollowed(isFollowing);
           setHasRequested(hasRequested);
         } catch (error) {
-          console.log(error);
+          // console.log(error);
         } finally {
           setIsBtnDisabled(false);
         }
@@ -188,7 +188,7 @@ export default function ProfileScreen({
           setIsReqReceived(hasReqReceieved);
           setReqID(requestId);
         } catch (error) {
-          console.log(error);
+          // console.log(error);
         }
       })();
 
@@ -209,7 +209,7 @@ export default function ProfileScreen({
       })();
   }, [targetUserId]);
 
-  console.log({ Posts });
+  // console.log({ Posts });
 
   return (
     <ScrollView

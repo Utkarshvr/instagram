@@ -23,7 +23,7 @@ export default function Notifications() {
         const reqs = await fetchFollowRequests(currentUserId);
         setFlwReqs(reqs);
       } catch (error) {
-        console.log(error);
+        // console.log(error);
       } finally {
         setIsLoading(false);
       }

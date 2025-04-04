@@ -40,24 +40,24 @@ export default function FollowReq() {
       try {
         const allUserIDs = flwReqs.map((e) => e.from);
         const users = await fetchUsersByIds(allUserIDs);
-        console.log(users);
+        // console.log(users);
         setAllUsers(users);
       } catch (error) {
-        console.log(error);
+        // console.log(error);
       } finally {
         setIsFetchingUsers(false);
       }
     })();
   }, [flwReqs]);
 
-  console.log({ flwReqs });
+  // console.log({ flwReqs });
 
   const [isConfirmBtnDisabled, setIsConfirmBtnDisabled] = useState(false);
   const [isCancelBtnDisabled, setIsCancelBtnDisabled] = useState(false);
 
   const acceptReq = async (targetUserId: string) => {
     const reqID = flwReqs.find((e) => e.from === targetUserId)?.id;
-    if (!reqID) return console.log("reqID is not present");
+    if (!reqID) return // console.log("reqID is not present");
 
     try {
       setIsConfirmBtnDisabled(true);
@@ -71,14 +71,14 @@ export default function FollowReq() {
         // filter out follow requests
 
         const newReqs = flwReqs.filter((e) => e.from !== targetUserId);
-        console.log({ newReqs });
+        // console.log({ newReqs });
         setFlwReqs(newReqs);
         toastMsg("Confirmed");
       } else {
-        console.log("Couldn't  accept request");
+        // console.log("Couldn't  accept request");
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     } finally {
       setIsConfirmBtnDisabled(false);
     }
@@ -91,14 +91,14 @@ export default function FollowReq() {
       if (response === true) {
         // filter
         const newReqs = flwReqs.filter((e) => e.from !== targetUserId);
-        console.log({ newReqs });
+        // console.log({ newReqs });
         setFlwReqs(newReqs);
         toastMsg("Deleted");
       } else {
-        console.log("Couldn't cancel request");
+        // console.log("Couldn't cancel request");
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     } finally {
       setIsCancelBtnDisabled(false);
     }

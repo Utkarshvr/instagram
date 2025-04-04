@@ -29,7 +29,7 @@ export default function Profile() {
       if (userSnap.exists()) {
         setUser({ uid: userSnap.id, ...userSnap.data() } as UserType);
       } else {
-        console.log("No such user found!");
+        // console.log("No such user found!");
         setUser(null);
       }
     } catch (error) {

@@ -41,7 +41,7 @@ export default function PostScreen() {
   useEffect(() => {
     (async () => {
       const { data } = await fetchDocByID<POST_TYPE>("posts", uid);
-      console.log({ data });
+      // console.log({ data });
       setPost(data);
     })();
   }, []);

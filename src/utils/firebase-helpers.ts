@@ -51,7 +51,7 @@ export const sendFollowRequest = async (
       }
       return { isDone: true, error: null };
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       return { isDone: false, error };
     }
   }
@@ -86,7 +86,7 @@ export const unfollowUser = async (
     if (!followersSnap.empty) {
       await deleteDoc(followersSnap.docs[0].ref);
     }
-    console.log("Successfully unfollowed the user.");
+    // console.log("Successfully unfollowed the user.");
     return true;
   } catch (error) {
     console.error("Error unfollowing user:", error);
@@ -109,7 +109,7 @@ export const removeFollowRequest = async (
     const requestSnap = await getDocs(requestQuery);
 
     if (requestSnap.empty) {
-      console.log("No follow request found.");
+      // console.log("No follow request found.");
       return false; // No request found
     }
 
@@ -119,7 +119,7 @@ export const removeFollowRequest = async (
     );
     await Promise.all(deletePromises);
 
-    console.log("Follow request removed successfully.");
+    // console.log("Follow request removed successfully.");
     return true;
   } catch (error) {
     console.error("Error removing follow request:", error);
@@ -179,7 +179,7 @@ export const checkFriendRequestByUserID = async (
     );
     const requestSnap = await getDocs(requestQuery);
     const hasReqReceieved = !requestSnap.empty;
-    // console.log(requestSnap.docs[0].id);
+    // // console.log(requestSnap.docs[0].id);
     return {
       hasReqReceieved, // True if the request exists
       requestId: !requestSnap.empty ? requestSnap.docs[0].id : null,
@@ -205,7 +205,7 @@ export const acceptFollowRequest = async (
   fromUserId: string,
   toUserId: string
 ) => {
-  console.log({ requestId });
+  // console.log({ requestId });
   try {
     // Add to followers
     const followerRef = doc(collection(db, "followers"));
@@ -225,7 +225,7 @@ export const acceptFollowRequest = async (
     await deleteDoc(doc(db, "followRequests", requestId));
     return true;
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return false;
   }
 };
@@ -373,7 +373,7 @@ export async function fetchAllDocs<T>(collection_name: COLLECTION_NAME_TYPE) {
       data,
     };
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return { isSuccess: false, error: error as FirebaseError, data: null };
   }
 }
@@ -388,7 +388,7 @@ export async function createFB(
 
     return { isSuccess: true, error: null, id: ref.id };
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return { isSuccess: false, error: error as FirebaseError, id: null };
   }
 }
@@ -448,7 +448,7 @@ export async function deleteFB(
 //       data,
 //     };
 //   } catch (error) {
-//     console.log(error);
+//     // console.log(error);
 //     return { isSuccess: false, error: error as FirebaseError, data: null };
 //   }
 // }
@@ -498,7 +498,7 @@ export async function fetchPosts(targetUserID: string, currentUserID: string) {
       data: null,
     };
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return { isSuccess: false, error: error as FirebaseError, data: null };
   }
 }

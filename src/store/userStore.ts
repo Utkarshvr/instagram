@@ -31,7 +31,7 @@ const useUserStore = create<UserStore>((set) => ({
     set(() => ({ isFetching: true }));
     if (!userID) {
       set(() => ({ isFetching: false }));
-      return console.log("userID not present");
+      return // console.log("userID not present");
     }
     const { isSuccess, data } = await fetchDocByID<UserType>("users", userID);
     if (isSuccess)

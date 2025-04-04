@@ -31,8 +31,8 @@ export const uploadToCloudinary = async (imageUri: string) => {
     );
 
     const data = await response.json();
-    console.log("Cloudinary Repsne: ", data);
-    console.log("Cloudinary URL:", data.secure_url);
+    // console.log("Cloudinary Repsne: ", data);
+    // console.log("Cloudinary URL:", data.secure_url);
     return data.secure_url;
   } catch (error) {
     console.error("Upload Error:", error);
