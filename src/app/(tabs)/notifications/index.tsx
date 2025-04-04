@@ -34,7 +34,7 @@ export default function Notifications() {
 
   return (
     <ScrollView className="bg-neutral-950 flex-1 p-4">
-      {flwReqs.length > 0 && (
+      {flwReqs.length > 0 ? (
         <TouchableOpacity
           onPress={() => router.push("/notifications/follow_requests")}
           className="w-full py-2 flex-row items-center justify-between"
@@ -48,6 +48,10 @@ export default function Notifications() {
             <Ionicons name="chevron-forward" size={18} color={"#525252"} />
           </View>
         </TouchableOpacity>
+      ) : (
+        <Text className="text-neutral-300 font-montserrat">
+          Nothing to see here!
+        </Text>
       )}
     </ScrollView>
   );
