@@ -13,7 +13,7 @@
       "splash": {
         "image": "./src/assets/icons/insta-logo-rounded.png",
         "resizeMode": "cover",
-        "backgroundColor": "#000",
+        "backgroundColor": "#000000",
         "dark": {
           "image": "./src/assets/icons/insta-logo-rounded.png",
           "resizeMode": "cover",
@@ -24,12 +24,12 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/icons/insta-logo-rounded.png",
-        "backgroundColor": "#000"
+        "backgroundColor": "#000000"
       },
       "splash": {
         "image": "./src/assets/icons/insta-logo-rounded.png",
         "resizeMode": "cover",
-        "backgroundColor": "#000",
+        "backgroundColor": "#000000",
         "dark": {
           "image": "./src/assets/icons/insta-logo-rounded.png",
           "resizeMode": "cover",
@@ -51,7 +51,7 @@
           "image": "./src/assets/icons/insta-logo-rounded.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#000"
+          "backgroundColor": "#000000"
         }
       ],
       "expo-asset",
